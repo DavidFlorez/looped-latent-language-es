@@ -113,18 +113,16 @@ def main() -> None:
 
     lm_vocab_size = int(wrapper.lm_head.weight.shape[0])
     piece_to_ids = build_piece_to_token_ids(tokenizer, max_vocab_size=lm_vocab_size)
-
-    # Check if dynamic loop_num_passes matches fresh text_config={"loop_num_passes": p} on P=1
-    if "varloop" in args.model.lower() and 1 in passes_list:
-        test_ids = tokenizer('Español: "perro" - Français: "', return_tensors="pt").to(wrapper.device)["input_ids"]
-        diff_p1 = wrapper.verify_against_native(test_ids, num_passes=1)
-        print(f"[Verify] Wrapper vs native (dynamic loop_num_passes=1) max_abs_diff: {diff_p1:.8e}")
+    test_ids = tokenizer('Español: "perro" - Français: "', return_tensors="pt", add_special_tokens=True).to(wrapper.device)["input_ids"]
 
     coda_by_p: dict[int, dict[str, np.ndarray]] = {}
     all_summary_rows: list[dict] = []
     all_top5_records: list[dict] = []
 
     for p in passes_list:
+        diff_p = wrapper.verify_against_native(test_ids, num_passes=p)
+        print(f"[Verify] Wrapper vs native (P={p}) max_abs_diff: {diff_p:.8e}")
+        assert diff_p < 1e-3, f"Wrapper mismatch at P={p}: {diff_p}"
         t_p = time.time()
         res = evaluate_for_passes(
             wrapper=wrapper,

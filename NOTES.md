@@ -12,9 +12,11 @@ Test whether Thinking Machines' variable-loop transformer (`thinkingmachines/TML
 
 ## Dated Log (Attempts, Errors & Fixes)
 - **2026-11-23**:
-  - Reviewed HF model card (`thinkingmachines/TML-d24-varloop-research`), `config.json`, Thinking Machines release post (`inkling-2-mini`), Goodfire's *"Interpreting Inkling 2 Mini"* & appendix (attention residuals over 6-layer blocks, cross-pass message bank + rank-64 keep/gain gates, logit-lens vs coda-lens), and NNsight's *"Opening the box of Inkling 2 Mini using NNsight+NDIF"* (`llm.final_input`, `llm.message_input`, `loop_num_passes`).
-  - Initialized repo `looped-latent-language-es`, copied `data/words.csv` (150 nouns across `es, ca, fr, en, zh`) from `DavidFlorez/latent-language-es`, and implemented Wendler-style `prompts.py`.
-  - Provisioning Colab G4 runtime (`colab new -s inkling-g4 --gpu G4`) to verify GPU, `transformers` version, and run smoke test before full evaluation.
+  - Reviewed HF model card (`thinkingmachines/TML-d24-varloop-research`), `config.json`, Thinking Machines release post (`inkling-2-mini`), Goodfire's *"Interpreting Inkling 2 Mini"* & appendix (attention residuals over 6-layer blocks, cross-pass message bank + rank-64 keep/gain gates, logit-lens vs coda-lens), and NNsight's *"Opening the box of Inkling 2 Mini using NNsight+NDIF"* (`llm.final_input`, `llm.message_input`, `loop_num_passes`), plus `transformers` `modeling_inkling2_loop.py`.
+  - Initialized repo `looped-latent-language-es`, copied `data/words.csv` (150 nouns across `es, ca, fr, en, zh`) from `DavidFlorez/latent-language-es`, implemented `prompts.py`, `gpu_guard.py`, `model_wrapper.py`, `eval_looped.py`, `plotting.py`, `run.py`, `requirements.txt`, `README.md`.
+  - Created GitHub repo `https://github.com/DavidFlorez/looped-latent-language-es` and pushed initial milestones (`3bbec8d`, `493b309`).
+  - Updated `run.py` to verify `wrapper.verify_against_native` at every pass count `P` before executing the full dataset loop.
+  - Attempted to provision Colab G4 runtime (`colab new -s inkling-g4 --gpu G4`) across 3 separate attempts (9+ POST retries between 11:29 and 11:37 PST); `colab whoami` (with `SSL_CERT_FILE` pointing to `certifi/cacert.pem`) confirmed valid `oauth2` auth (`443.60` compute units) and `GET /tun/m/assign?...&accelerator=G4` returned `200 OK` (`{"acc":"g4","variant":"GPU"}`), while `POST /tun/m/assign` timed out after 30s with HTTP `503 Service Unavailable` on every attempt (with `--high-mem` returning `400` because G4 has a single shape). Per the Blackwell `>= 32 GB` guard, stopped rather than falling back to non-Blackwell GPUs or running locally.
 
 ## Key Results
 *(To be populated from `results/summary.csv` after Colab runs.)*
