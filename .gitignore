@@ -1,0 +1,29 @@
+# Python / Bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+env/
+
+# Model weights, HF caches, tokens
+*.safetensors
+*.bin
+*.pt
+*.pth
+*.gguf
+.cache/
+huggingface/
+hf_cache/
+.env
+*.token
+*token*.json
+*secret*
+
+# OS / Editor
+.DS_Store
+.ipynb_checkpoints/
+.vscode/
+.idea/
