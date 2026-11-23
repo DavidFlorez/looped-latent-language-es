@@ -18,6 +18,7 @@ Test whether Thinking Machines' variable-loop transformer (`thinkingmachines/TML
   - Updated `run.py` to verify `wrapper.verify_against_native` at every pass count `P` before executing the full dataset loop.
   - Attempted to provision Colab G4 runtime (`colab new -s inkling-g4 --gpu G4`) across 4 attempts (`11:29`–`11:43` PST); `colab whoami` (with `SSL_CERT_FILE` pointing to `certifi/cacert.pem`) confirmed valid `oauth2` auth (`443.60` compute units) and `GET /tun/m/assign?...&accelerator=G4` returned `200 OK` (`{"acc":"g4","variant":"GPU"}`), while `POST /tun/m/assign` timed out after 30s with HTTP `503 Service Unavailable` on every attempt (with `--high-mem` returning `400` because G4 has a single shape).
   - Confirmed via `googlecolab/google-colab-cli#273` (filed 2026-11-23) that `POST /tun/m/assign` via `colab-cli` is globally returning `503` for `G4`/`A100`/`L4`/`H100` on 2026-11-23, while connecting a G4 runtime in the Colab Web UI (`colab.research.google.com`) succeeds and `colab exec` can attach to that browser-allocated runtime. Stopped rather than falling back to non-Blackwell GPUs or running locally.
+  - **13:51–13:52 PST (after 2h scheduled retry)**: Verified `ccu-info` (`443.60` CU, `eligibleGpus: ["G4", "A100", "L4", "T4"]`), retried `colab new -s inkling-g4 --gpu G4`; `GET` succeeded (`200 OK`) and `POST /tun/m/assign` still returned `503 Service Unavailable` after 30s (`#273` ongoing). Confirmed `0` active sessions (`0.00/hr`).
 
 ## Key Results
 *(To be populated from `results/summary.csv` after Colab runs.)*
